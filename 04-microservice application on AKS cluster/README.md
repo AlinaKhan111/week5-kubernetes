@@ -84,5 +84,4 @@ kubectl set image deployment/webapp webapp=<your-image>
 kubectl delete service webapp
 kubectl delete deployment webapp
 ```
-
-![](./screenshots/6.png)
+![Image](https://github.com/user-attachments/assets/9922f3a1-6543-425d-839b-db079ccaa020)
