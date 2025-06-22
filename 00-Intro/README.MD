@@ -53,7 +53,9 @@ A **Pod** is the **smallest unit in Kubernetes**. It can run one or more contain
 >  Usually one container per pod  
 >  Multi-container pods are for tightly-coupled workloads
 
-![Image](https://github.com/user-attachments/assets/505ce486-6189-4bb7-afba-ec076bb6c5e0)
+![Image](https://github.com/user-attachments/assets/3696090e-0a0b-4275-bbd3-959e30f83bec)
+
+
 
 **Example:**  
 A web app container and a log collector container sharing logs inside one pod.
@@ -138,7 +140,7 @@ kubectl delete pod <pod-name>
 ```
 
 ## Kubernetes Architecture
-![Image](https://github.com/user-attachments/assets/3696090e-0a0b-4275-bbd3-959e30f83bec)
+![Image](https://github.com/user-attachments/assets/505ce486-6189-4bb7-afba-ec076bb6c5e0)
 
 
 
