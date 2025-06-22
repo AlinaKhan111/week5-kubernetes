@@ -121,9 +121,10 @@ curl http://192.168.49.2:31423
 ## Summary:
 Successfully created a single-node Kubernetes cluster using Minikube on an Azure Ubuntu VM. Verified the cluster with kubectl, deployed an NGINX sample app, exposed it using a LoadBalancer service, and accessed it using Minikube’s internal service URL.
 
-![](./screenshots/1.png)
-![](./screenshots/2.png)
-![](./screenshots/3.png)
-![](./screenshots/4.png)
-![](./screenshots/5.png)
-![](./screenshots/7.png)
+![Image](https://github.com/user-attachments/assets/6d358101-2e9e-4a5c-972e-58a6cd4cf7c7)
+![Image](https://github.com/user-attachments/assets/f5789872-180d-416c-8951-8158af3b9c06)
+![Image](https://github.com/user-attachments/assets/96e55dc0-acfe-4b38-9e97-9936f9cb4d9a)
+![Image](https://github.com/user-attachments/assets/de2e4da3-1116-4c12-9a56-e8bbafe0659d)
+![Image](https://github.com/user-attachments/assets/c9cc5dc9-19e5-4f34-bbf6-0789329c7719)
+![Image](https://github.com/user-attachments/assets/e277a216-a949-4798-85d7-ace55d14ded6)
+
