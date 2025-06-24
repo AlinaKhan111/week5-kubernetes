@@ -94,3 +94,14 @@ http://<EXTERNAL-IP>
 | NodePort     | `kubectl expose ... --type=NodePort`   |
 | LoadBalancer | `kubectl expose ... --type=LoadBalancer`|
 
+### ✅ My Execution Notes:
+
+- ClusterIP: Verified by running a BusyBox test pod and using `wget` on the internal ClusterIP. Response from NGINX confirmed successful internal access.
+- NodePort: Service exposed on port 31591. Since AKS nodes do not have public IPs, this method could not be tested externally — which is expected behavior in AKS.
+- LoadBalancer: Created successfully, but EXTERNAL-IP remained `<pending>` due to Azure Student Subscription limitations in Southeast Asia region.
+
+
+![Image](https://github.com/user-attachments/assets/1c0a2246-cab2-4046-a275-4e8525769085)
+![Image](https://github.com/user-attachments/assets/65fa34a0-93a9-49cd-8a30-043ec9f5dc8f)
+![Image](https://github.com/user-attachments/assets/516240aa-d053-41df-adcb-2bfcfb5cc877)
+
