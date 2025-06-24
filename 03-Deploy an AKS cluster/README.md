@@ -5,152 +5,110 @@ Deploy an AKS cluster using Azure Portal, access the Kubernetes Dashboard, and c
 
 ---
 
-## Prerequisites:
-- Azure Student Subscription (resource quota may be limited)
-- Azure Portal Access: https://portal.azure.com
-- Azure Cloud Shell enabled (Bash preferred)
+##  Prerequisites:
+- Azure Student Subscription (may have quota/VM limits)
+- Azure Portal: [https://portal.azure.com](https://portal.azure.com)
+- Azure Cloud Shell (Bash preferred)
 
 ---
 
-##  Region Recommendation:
-Use a region that supports AKS and VM sizes commonly allowed in student subscriptions.
+##  Region & VM Selection:
+Due to regional and VM size constraints in Azure Student Subscription:
 
-**Recommended Region:** `East US`  
-**Avoid:** `Central India` (no zone support, limited VM sizes)
-
----
-
-##  VM Size Recommendation:
-If `Standard_DS2_v2` is not available, choose:
-
--  `Standard_B2s` (2 vCPU, 4 GB RAM — budget-friendly)
--  `Standard_D2s_v3` (2 vCPU, 8 GB RAM — more powerful)
+- **Selected Region:** Southeast Asia  
+- **Selected VM Size:** Standard_A2_v2 (only allowed size in this region)
 
 ---
 
-##  Step-by-Step: Deploy AKS via Azure Portal
+##  AKS Deployment via Azure Portal
 
-1. **Go to Azure Portal**
-   - https://portal.azure.com
-
-2. **Search for "Kubernetes Services" → Click "Create"**
-
-3. **Basics Tab**
-   - Subscription: *Your Student Subscription*
-   - Resource Group: `week5` or create new
-   - Cluster name: `aks-cluster`
-   - Region: `East US`
-   - Kubernetes version: Leave default
-
-4. **Node Pools Tab**
-   - Node size: `Standard_B2s` or `Standard_D2s_v3`
-   - Node count: `1`
-   - Availability zones: **Uncheck all (set to None)**
-
-5. **Authentication Tab**
-   - Leave default (System-assigned managed identity)
-
-6. **Networking Tab**
-   - Network configuration: `Kubenet` (default)
-
-7. **Review + Create**
-   - Validate the config and click **"Create"**
+1. **Navigate** to Azure Portal → Search "Kubernetes Services" → Click **Create**
+2. **Basics Tab:**
+   - Subscription: Student Subscription
+   - Resource Group: `week5`
+   - Cluster Name: `aks-cluster111`
+   - Region: `Southeast Asia`
+3. **Node Pools Tab:**
+   - Node Size: `Standard_A2_v2`
+   - Node Count: 1
+   - Availability Zones: Unchecked (None)
+4. **Authentication:** System-assigned managed identity (default)
+5. **Networking:** Kubenet (default)
+6. **Review + Create:** ✅ Deployment successful
 
 ---
 
-##  Connect to AKS via Azure Cloud Shell
-
-1. Open **Cloud Shell** (`>_` icon in top bar)
-2. Run the following command to configure `kubectl`:
-
- ```bash
-   az aks get-credentials --resource-group week5 --name aks-cluster
-   ```
-
-3. Verify connection:
+##  Connected via Azure Cloud Shell
 
 ```bash
+az aks get-credentials --resource-group week5 --name aks-cluster111
 kubectl get nodes
 ```
+ Verified 2 nodes in Ready state.
 
-## Install Kubernetes Dashboard
+## Installed Kubernetes Dashboard
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl get pods -n kubernetes-dashboard
 ```
-Then run:
+ Dashboard pod and metrics scraper were in Running state.
 
+## Created Admin User & Generated Token
 ```bash
-kubectl proxy
-```
 
-Open this link in your browser:
-➡️ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+# Applied admin user manifest
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 
+# Verified ServiceAccount
+kubectl -n kubernetes-dashboard get serviceaccount admin-user -o yaml
 
-## Create Admin User for Dashboard Access
-```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/docs/user/access-control/creating-sample-user.yaml
-```
-Generate login token:
+# Created ClusterRoleBinding
+kubectl get clusterrolebinding admin-user -o yaml
 
-```bash
+# Generated login token
 kubectl -n kubernetes-dashboard create token admin-user
 ```
+Token successfully generated.
 
-➡️ Use this token to log in to the Dashboard.
+## Attempted Dashboard Access
+```bash
 
-## Create Custom RBAC Roles for Other Users
-Example: Create a readonly-user with access to view Pods & Services.
-
-1. Create a file called readonly-user.yaml:
+kubectl proxy
+```
+## Output:
 
 ```bash
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: readonly-user
-  namespace: default
----
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  namespace: default
-  name: readonly-role
-rules:
-- apiGroups: [""]
-  resources: ["pods", "services"]
-  verbs: ["get", "list", "watch"]
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: readonly-rolebinding
-  namespace: default
-subjects:
-- kind: ServiceAccount
-  name: readonly-user
-  namespace: default
-roleRef:
-  kind: Role
-  name: readonly-role
-  apiGroup: rbac.authorization.k8s.io
+Starting to serve on 127.0.0.1:8001
 ```
 
-2. Apply the file:
-```bash
-kubectl apply -f readonly-user.yaml
-```
-3. Generate token for the new user:
-```bash
-kubectl -n default create token readonly-user
-```
+### ⚠️ Access Limitation Justification
+Despite following all correct steps:
 
-➡️ Use this token to log in to the dashboard with restricted access.
+Dashboard access via browser (http://localhost:8001/...) failed because:
+
+- Cloud Shell cannot preview local ports like localhost:8001.
+
+- External IP access for dashboard service also didn’t work due to security restrictions in AKS/Cloud Shell.
+
+### Successful Configuration
+- AKS cluster deployed in constrained environment (Southeast Asia, A2_v2)
+
+- Dashboard installed and verified via kubectl
+
+- Admin user created and bound with cluster-admin privileges
+
+- Login token generated
+
+- Dashboard proxy was successfully started via kubectl proxy
+
+📸 Screenshots Taken
 
 
-### Notes:
-- Always check region + VM size availability if issues occur.
+![Image](https://github.com/user-attachments/assets/be9f4295-d739-4cc9-b63c-f81c1a6f0dfe)
+![Image](https://github.com/user-attachments/assets/4006dc2a-48a0-475e-903b-7a3eddd47f2f)
+![Image](https://github.com/user-attachments/assets/9d853c8f-6da0-46e3-b96c-dda3ea2b1cc5)
+![Image](https://github.com/user-attachments/assets/5b103354-c80b-4a4d-b2be-a66497d70b71)
 
-- For more roles: Use ClusterRole and ClusterRoleBinding for access across namespaces.
 
-- Use kubectl delete to clean up any RBAC objects or deployments after testing.
+
+
